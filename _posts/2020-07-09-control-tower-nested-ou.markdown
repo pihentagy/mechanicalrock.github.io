@@ -31,24 +31,24 @@ example OUs nested 2 levels deep:
     Test
     Production
 ```
-
   Notice from these examples that some OU names might be duplicated, distinguished only by their parent OU.
+
   The user may define Service Control Policies (SCP) and apply them to an OU, and any account added to that OU will inherit the SCP - the limits of the SCP will be applied to the account.  Further, the account will inherit any SCPs applied to any parent OUs, up to SCPs applied to the root of the Organization.  
 
 # AWS Control Tower Customization Solution
   AWS provides a central tool to specify and deploy configuration via SCPs definied as JSON files, and resources defined by Cloudformation templates.  The deployment may be targetted by Account, Region, and OU.  This Solution may be found here: [AWS Control Tower Customizations](https://aws.amazon.com/solutions/implementations/customizations-for-aws-control-tower/)<br/>
 
-# Problem statement
+# A Problem
   At Mechanical Rock we are organizing our accounts into OUs, and nesting them.
   This may lead us to apply a restriction to a child OU that we don't want to apply to the parent OU, and the documentation offers no example of doing this.
   I have confirmed that the AWS Solution does not 'find' OUs by their individual name alone, even if the name is unique within the Organization.  
 
-# The progression to a Solution
+# Toward a Solution
   AWS pubilshes the source code and I examined that.  I found some mention of nested OUs, but the implementation seemed incomplete, and some exploratory tests confirmed this.
-  I forked the existing source and I have opened a [PR with AWS](https://github.com/awslabs/aws-control-tower-customizations/pull/20)<br/>
+  I forked the existing source and I have opened a [PR with AWS](https://github.com/awslabs/aws-control-tower-customizations/pull/20) with changes.<br/>
   Some existing references in the code suggested ':' as a delimimter character, so I've implemented that.  I provide an example further down.
 
-# Some Applications
+# Some usage
   Along with other use cases, we are implementing OUs for security and forensic work.  Under the root of the Orgainization, we created an OU named 'Quarantine' and beneath that two OUs - 'Deny-all' and 'Read-only'.
   This is the stanza in the manifest.yaml file which deploys the 'deny-all' SCP - note the nested OU declaration:
   ``` yaml
